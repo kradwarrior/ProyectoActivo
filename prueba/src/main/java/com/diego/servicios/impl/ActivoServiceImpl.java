@@ -52,7 +52,7 @@ public class ActivoServiceImpl implements ActivoService {
 	public void guardarActivo(Activo activo) throws Exception {
 		// Si fecha de compra del activo es mayor a fecha de baja, genera una
 		// excepcion.
-		if (activo.getFechaCompra().compareTo(activo.getFechaBaja()) > 0) {
+		if (activo.getFechaCompra() != null && activo.getFechaBaja() != null && activo.getFechaCompra().compareTo(activo.getFechaBaja()) > 0) {
 			throw new Exception(ERROR_FECHAMAYOR);
 		}
 
@@ -64,7 +64,7 @@ public class ActivoServiceImpl implements ActivoService {
 		Activo activoValida = buscarPorId(activo.getId());
 		// Si fecha de compra del activo es mayor a fecha de baja a actualizar,
 		// genera una excepcion.
-		if (activoValida.getFechaCompra().compareTo(activo.getFechaBaja()) > 0) {
+		if (activoValida.getFechaCompra() != null && activo.getFechaBaja() != null && activoValida.getFechaCompra().compareTo(activo.getFechaBaja()) > 0) {
 			throw new Exception(ERROR_FECHAMAYOR);
 		}
 		repositorio.actualizarActivo(activo.getId(), activo.getSerial(), activo.getFechaBaja());

@@ -104,7 +104,9 @@ public class ActivoController {
 	 */
 	@RequestMapping(path = "/api/activo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> crearActivo(@RequestBody Activo activo) {
+		
 		try {
+			validarActivo(activo, true);
 			service.guardarActivo(activo);
 		} catch (Exception e) {
 			return controladorExcepcion(null, e);
@@ -122,8 +124,10 @@ public class ActivoController {
 	public ResponseEntity<String> actualizarActivo(@RequestBody Activo activo) {
 
 		try {
+			
+			validarActivo(activo, false);
 			service.actualizarActivo(activo);
-
+			
 		} catch (Exception e) {
 			return controladorExcepcion(null, e);
 		}
@@ -137,6 +141,7 @@ public class ActivoController {
 	 * @throws Exception si se presenta un erro al cambiar el formato String
 	 */
 	private Date cambiarStringADate(String fechaString) throws Exception {
+		
 		Date fechaDate = null;
 		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyy");
 		try {
@@ -164,13 +169,49 @@ public class ActivoController {
 	 * @return respuesta según la excepcion generada
 	 */
 	private ResponseEntity controladorExcepcion(Object results, Exception e) {
+		
 		if (e != null && ActivoService.ERROR_FECHAMAYOR.equals(e.getMessage())
-				&& ActivoService.ERROR_FECHAINVALIDA.equals(e.getMessage())) {
+				|| ActivoService.ERROR_FECHAINVALIDA.equals(e.getMessage())
+				|| ActivoService.ERROR_DATOSINCOMPLETOS.equals(e.getMessage())) {
 			return new ResponseEntity<>(results, HttpStatus.BAD_REQUEST);
 		} else if (ActivoService.ERROR_NODATOS.equals(e.getMessage())) {
 			return new ResponseEntity<>(results, HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	/**
+	 * Valida un Activo cuando se esta actualizando o eliminando
+	 * @param activo entidad a validar
+	 * @param nuevo true o false
+	 * @throws Exception si existe alguna valor nulo o vacio
+	 */
+	private void validarActivo(Activo activo, boolean nuevo) throws Exception {
+		
+		boolean valido = true;
+
+		valido &= StringUtils.isNotBlank(activo.getSerial());
+		if(nuevo){
+			valido &= StringUtils.isNotBlank(activo.getNombre());
+			valido &= StringUtils.isNotBlank(activo.getDescripcion());
+			valido &= StringUtils.isNotBlank(activo.getTipo());
+			valido &= activo.getNumeroInventario() != null;
+			valido &= activo.getPeso() != null;
+			valido &= activo.getAlto() != null;
+			valido &= activo.getAncho() != null;
+			valido &= activo.getLargo() != null;
+			valido &= activo.getValorCompra() != null;
+			valido &= activo.getFechaCompra() != null;
+			valido &= StringUtils.isNotBlank(activo.getEstado());
+			valido &= StringUtils.isNotBlank(activo.getColor());
+		}else {
+			valido &= activo.getId() == null;
+			valido &= activo.getFechaBaja() != null;
+		}
+		
+		if(!valido){
+			throw new Exception(ActivoService.ERROR_DATOSINCOMPLETOS);
 		}
 	}
 

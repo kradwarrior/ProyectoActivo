@@ -19,6 +19,7 @@ public interface ActivoService {
 	public static String ERROR_FECHAMAYOR = "EFM";
 	public static String ERROR_FECHAINVALIDA = "EFI";
 	public static String ERROR_NODATOS = "END";
+	public static String ERROR_DATOSINCOMPLETOS = "EDI";
 
 	/**
 	 * Permite retornar una lista de Activos sin ningun filtro
