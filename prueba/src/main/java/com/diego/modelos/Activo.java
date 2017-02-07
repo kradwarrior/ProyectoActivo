@@ -14,50 +14,50 @@ import javax.persistence.TemporalType;
 public class Activo {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-	
+
 	@Column
 	private String nombre;
 
 	@Column
 	private String descripcion;
-	
+
 	@Column
 	private String tipo;
-	
+
 	@Column
 	private String serial;
-	
+
 	@Column(name = "NUMEROINVENTARIO")
 	private Integer numeroInventario;
-	
+
 	@Column
 	private Integer peso;
-	
+
 	@Column
 	private Integer alto;
-	
+
 	@Column
 	private Integer ancho;
-	
+
 	@Column
 	private Integer largo;
-	
+
 	@Column(name = "VALORCOMPRA")
 	private Double valorCompra;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHACOMPRA")
 	private Date fechaCompra;
-	
+
 	@Temporal(TemporalType.DATE)
 	@Column(name = "FECHABAJA")
 	private Date fechaBaja;
-	
+
 	@Column
 	private String estado;
-	
+
 	@Column
 	private String color;
 
@@ -65,7 +65,9 @@ public class Activo {
 
 	}
 
-	public Activo(Integer id, String nombre, String descripcion, String tipo, String serial, Integer numeroInventario, Integer peso, Integer alto, Integer ancho, Integer largo, double valorCompra, Date fechaCompra, Date fechaBaja, String estado, String color) {
+	public Activo(Integer id, String nombre, String descripcion, String tipo, String serial, Integer numeroInventario,
+			Integer peso, Integer alto, Integer ancho, Integer largo, double valorCompra, Date fechaCompra,
+			Date fechaBaja, String estado, String color) {
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;

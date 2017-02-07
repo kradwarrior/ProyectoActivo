@@ -12,32 +12,52 @@ import com.diego.servicios.ActivoService;
 
 @Service
 public class ActivoServiceImpl implements ActivoService {
-	
+
 	@Autowired
 	private RepositorioActivos repositorio;
 
 	@Override
-	public List<Activo> buscarActivos() {
+	public List<Activo> buscarActivos() throws Exception {
 		return repositorio.findAll();
 	}
-	
+
 	@Override
-	public Activo buscarPorId(Integer id) {
-		return (Activo) repositorio.findOne(id);
+	public Activo buscarPorId(Integer id) throws Exception {
+		Activo activo = (Activo) repositorio.findOne(id);
+		if (activo == null) {
+			throw new Exception(ERROR_NODATOS);
+		}
+		return activo;
 	}
-	
+
 	@Override
-	public List<Activo> buscarFiltroEspecifico(String tipo, Date fechaCompra, String serial) {
-		return (List<Activo>) repositorio.findAllFiltro(tipo, fechaCompra, serial);
+	public List<Activo> buscarFiltroEspecifico(String tipo, Date fechaCompra, String serial) throws Exception {
+		List<Activo> listaActivos = (List<Activo>) repositorio.findAllFiltro(tipo, fechaCompra, serial);
+		if (listaActivos != null && listaActivos.isEmpty()) {
+			throw new Exception(ERROR_NODATOS);
+		}
+		return listaActivos;
 	}
-	
+
 	@Override
-	public void guardarActivo(Activo activo) {
+	public void guardarActivo(Activo activo) throws Exception {
+		// Si fecha de compra del activo es mayor a fecha de baja, genera una
+		// excepcion.
+		if (activo.getFechaCompra().compareTo(activo.getFechaBaja()) > 0) {
+			throw new Exception(ERROR_FECHAMAYOR);
+		}
+
 		repositorio.save(activo);
 	}
-	
+
 	@Override
-	public void actualizarActivo(Activo activo) {
+	public void actualizarActivo(Activo activo) throws Exception {
+		Activo activoValida = buscarPorId(activo.getId());
+		// Si fecha de compra del activo es mayor a fecha de baja a actualizar,
+		// genera una excepcion.
+		if (activoValida.getFechaCompra().compareTo(activo.getFechaBaja()) > 0) {
+			throw new Exception(ERROR_FECHAMAYOR);
+		}
 		repositorio.actualizarActivo(activo.getId(), activo.getSerial(), activo.getFechaBaja());
 	}
 

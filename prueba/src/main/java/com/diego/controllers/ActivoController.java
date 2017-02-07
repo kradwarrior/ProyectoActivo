@@ -27,13 +27,24 @@ public class ActivoController {
 
 	@RequestMapping(path = "/api/activo", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Activo>> verActivos() {
-		List<Activo> results = service.buscarActivos();
+		List<Activo> results = null;
+		try {
+			results = service.buscarActivos();
+		} catch (Exception e) {
+			return controladorExcepcion(results, e);
+		}
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/api/activo/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Activo> verActivo(@PathVariable Integer id) {
-		Activo results = service.buscarPorId(id);
+
+		Activo results = null;
+		try {
+			results = service.buscarPorId(id);
+		} catch (Exception e) {
+			return controladorExcepcion(results, e);
+		}
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
 
@@ -41,44 +52,68 @@ public class ActivoController {
 	public ResponseEntity<List<Activo>> buscarActivos(@RequestParam String tipo, @RequestParam String fecha,
 			@RequestParam String serial) {
 
-		Date fechaDate = StringUtils.isBlank(fecha) ? null : cambiarStringADate(fecha);
-		if (StringUtils.isNotBlank(fecha) && fechaDate == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		
-		List<Activo> results = service.buscarFiltroEspecifico(comprobarNulo(tipo), fechaDate, comprobarNulo(serial));
+		List<Activo> results = null;
+		try {
 
+			Date fechaDate = StringUtils.isBlank(fecha) ? null : cambiarStringADate(fecha);
+			if (StringUtils.isNotBlank(fecha) && fechaDate == null) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+
+			results = service.buscarFiltroEspecifico(comprobarNulo(tipo), fechaDate, comprobarNulo(serial));
+
+		} catch (Exception e) {
+			return controladorExcepcion(results, e);
+		}
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/api/activo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> crearActivo(@RequestBody Activo activo) {
-		
-		service.guardarActivo(activo);
-		String results = "Registrado correctamente";
-		return new ResponseEntity<>(results, HttpStatus.OK);
+		try {
+			service.guardarActivo(activo);
+		} catch (Exception e) {
+			return controladorExcepcion(null, e);
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/api/activo", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> actualizarActivo(@RequestBody Activo activo) {
-		
-		service.actualizarActivo(activo);
-		String results = "Registrado correctamente";
-		return new ResponseEntity<>(results, HttpStatus.OK);
+
+		try {
+			service.actualizarActivo(activo);
+
+		} catch (Exception e) {
+			return controladorExcepcion(null, e);
+		}
+		return new ResponseEntity<>(null, HttpStatus.OK);
 	}
 
-	private Date cambiarStringADate(String fechaString) {
+	private Date cambiarStringADate(String fechaString) throws Exception {
 		Date fechaDate = null;
 		SimpleDateFormat formatter = new SimpleDateFormat("ddMMyy");
 		try {
 			fechaDate = formatter.parse(fechaString);
 		} catch (Exception e) {
+			throw new Exception(ActivoService.ERROR_FECHAINVALIDA);
 		}
 		return fechaDate;
 	}
 
 	private String comprobarNulo(String valor) {
 		return StringUtils.isBlank(valor) ? null : valor;
+	}
+
+	private ResponseEntity controladorExcepcion(Object results, Exception e) {
+		if (e != null && ActivoService.ERROR_FECHAMAYOR.equals(e.getMessage())
+				&& ActivoService.ERROR_FECHAINVALIDA.equals(e.getMessage())) {
+			return new ResponseEntity<>(results, HttpStatus.BAD_REQUEST);
+		} else if (ActivoService.ERROR_NODATOS.equals(e.getMessage())) {
+			return new ResponseEntity<>(results, HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(results, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
