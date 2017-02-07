@@ -12,6 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.diego.modelos.Activo;
 
+/**
+ * Esta clase es el repositorio para la entidad Activo la cual se encargar de
+ * manejar consultas genericas o especificas
+ * 
+ * @author DIEGO BERMUDEZ
+ * @version 1.0
+ *
+ */
+
 public interface RepositorioActivos extends CrudRepository<Activo, Integer>, Repository<Activo, Integer> {
 
 	public List<Activo> findAll();

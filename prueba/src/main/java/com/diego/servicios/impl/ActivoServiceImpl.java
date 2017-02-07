@@ -10,6 +10,15 @@ import com.diego.modelos.Activo;
 import com.diego.repositorios.RepositorioActivos;
 import com.diego.servicios.ActivoService;
 
+/**
+ * Esta clase contiene la implementacion de los servicios correspondientes a la
+ * entidad Activo
+ * 
+ * @author DIEGO BERMUDEZ
+ * @version 1.0
+ *
+ */
+
 @Service
 public class ActivoServiceImpl implements ActivoService {
 

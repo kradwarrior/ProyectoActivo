@@ -10,6 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * Esta clase es la Entidad de Activo
+ * 
+ * @author DIEGO BERMUDEZ
+ * @version 1.0
+ *
+ */
+
 @Entity
 public class Activo {
 
