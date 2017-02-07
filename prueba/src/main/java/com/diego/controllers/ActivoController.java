@@ -206,7 +206,7 @@ public class ActivoController {
 			valido &= StringUtils.isNotBlank(activo.getEstado());
 			valido &= StringUtils.isNotBlank(activo.getColor());
 		}else {
-			valido &= activo.getId() == null;
+			valido &= activo.getId() != null;
 			valido &= activo.getFechaBaja() != null;
 		}
 		
