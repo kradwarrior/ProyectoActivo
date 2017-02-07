@@ -22,12 +22,12 @@ public class ActivoServiceImpl implements ActivoService {
 	}
 	
 	@Override
-	public Activo buscarUno(int id) {
-		return repositorio.findOne(id);
+	public Activo buscarPorId(Integer id) {
+		return (Activo) repositorio.findOne(id);
 	}
 	
 	@Override
-	public List<Activo> buscarFiltro(String tipo, Date fechaCompra, String serial) {
+	public List<Activo> buscarFiltroEspecifico(String tipo, Date fechaCompra, String serial) {
 		return (List<Activo>) repositorio.findAllFiltro(tipo, fechaCompra, serial);
 	}
 	

@@ -9,9 +9,9 @@ public interface ActivoService {
 	
 	public List<Activo> buscarActivos();
 	
-	public Activo buscarUno(int ind);
+	public Activo buscarPorId(Integer ind);
 
-	public List<Activo> buscarFiltro(String tipo, Date fechaCompra, String serial);
+	public List<Activo> buscarFiltroEspecifico(String tipo, Date fechaCompra, String serial);
 	
 	public void guardarActivo(Activo activo);
 	

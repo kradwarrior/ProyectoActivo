@@ -32,8 +32,8 @@ public class ActivoController {
 	}
 
 	@RequestMapping(path = "/api/activo/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Activo> verActivo(@PathVariable int id) {
-		Activo results = service.buscarUno(id);
+	public ResponseEntity<Activo> verActivo(@PathVariable Integer id) {
+		Activo results = service.buscarPorId(id);
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
 
@@ -46,8 +46,7 @@ public class ActivoController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		
-		List<Activo> results = service.buscarFiltro(comprobarNulo(tipo), fechaDate, comprobarNulo(serial));
+		List<Activo> results = service.buscarFiltroEspecifico(comprobarNulo(tipo), fechaDate, comprobarNulo(serial));
 
 		return new ResponseEntity<>(results, HttpStatus.OK);
 	}
